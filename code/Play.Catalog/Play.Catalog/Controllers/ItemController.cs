@@ -11,8 +11,8 @@ namespace Play.Catalog.Controllers
     [Route("api/Item")]
     public class ItemController : ControllerBase
     {
-        private readonly IItemRepository _repo;
-        public ItemController(IItemRepository repo)
+        private readonly IRepository<Item> _repo;
+        public ItemController(IRepository<Item> repo)
         {
             _repo = repo;
         }
