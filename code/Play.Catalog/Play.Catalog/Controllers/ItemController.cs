@@ -11,19 +11,24 @@ namespace Play.Catalog.Controllers
     [Route("api/Item")]
     public class ItemController : ControllerBase
     {
-        private readonly ItemRepository repo = new();        
+        private readonly IItemRepository _repo;
+        public ItemController(IItemRepository repo)
+        {
+            _repo = repo;
+        }
 
+        
         [HttpGet("GetAsync")]
         public async Task<IEnumerable<ItemDTO>> GetAsync()
         {
-            var items = (await repo.GetAllAsync()).Select(item => item.asDto());
+            var items = (await _repo.GetAllAsync()).Select(item => item.asDto());
             return items;
         }
         
         [HttpGet("GetByIdAsync/{Id}")]
         public async Task<ActionResult<ItemDTO>> GetByIdAsync(Guid Id)
         {
-            var item = await repo.GetAsync(Id);
+            var item = await _repo.GetAsync(Id);
             if(item == null)
             {
                 return NotFound();
@@ -43,14 +48,14 @@ namespace Play.Catalog.Controllers
             };
             //var newitem = new ItemDTO(Guid.NewGuid(), item.Name, item.Description, item.Price, DateTimeOffset.UtcNow);
             //items.Add(newitem);
-            await repo.CreateAsync(Newitem);
+            await _repo.CreateAsync(Newitem);
             return CreatedAtAction(nameof(GetByIdAsync), new { Id = Newitem.Id});
         }
 
         [HttpPut("PutAsync/{Id}")]
         public async Task<IActionResult> PutAsync(Guid Id, UpdateItemDTO item)
         {
-            var existingItem = await repo.GetAsync(Id);// items.Where(x => x.Id.Equals(Id)).SingleOrDefault();
+            var existingItem = await _repo.GetAsync(Id);// items.Where(x => x.Id.Equals(Id)).SingleOrDefault();
             if(existingItem  == null)
             {
                 return NotFound();
@@ -59,20 +64,20 @@ namespace Play.Catalog.Controllers
             existingItem.Description = item.Description;
             existingItem.Price = item.Price;
 
-            await repo.UpdateAsync(existingItem);
+            await _repo.UpdateAsync(existingItem);
             return CreatedAtAction(nameof(GetByIdAsync), new { Id = existingItem.Id });
         }
 
         [HttpDelete("DeleteAsync/{Id}")]
         public async Task<IActionResult> DeleteAsync(Guid Id)
         {
-            var existingItem = await repo.GetAsync(Id);// items.Where(x => x.Id.Equals(Id)).SingleOrDefault();
+            var existingItem = await _repo.GetAsync(Id);// items.Where(x => x.Id.Equals(Id)).SingleOrDefault();
             if (existingItem == null)
             {
                 return NotFound();
             }
 
-            await repo.RemoveAsync(existingItem.Id);
+            await _repo.RemoveAsync(existingItem.Id);
             return NoContent();
         }
 
