@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Play.Catalog.DTO;
 using Play.Catalog.Entities;
 using Play.Catalog.Extentions;
-using Play.Catalog.Repositories;
+using Play.Common.Interfaces;
 
 namespace Play.Catalog.Controllers
 {

@@ -1,7 +1,8 @@
-﻿ using MongoDB.Driver;
-using Play.Catalog.Entities;
+﻿using MongoDB.Driver;
+using Play.Common.Interfaces;
+using System.Linq.Expressions;
 
-namespace Play.Catalog.Repositories;
+namespace Play.Common.MongoDb;
 
 public class MongoRepository<T> : IRepository<T> where T : IEntity
 {
@@ -18,9 +19,19 @@ public class MongoRepository<T> : IRepository<T> where T : IEntity
         return await _dbCollection.Find(filterBuilder.Empty).ToListAsync();
     }
 
+    public async Task<IReadOnlyCollection<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _dbCollection.Find(filter).ToListAsync();
+    }
+
     public async Task<T> GetAsync(Guid Id)
     {
         FilterDefinition<T> filter = filterBuilder.Eq(entity => entity.Id, Id);
+        return await _dbCollection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public async Task<T> GetAsync(Expression<Func<T, bool>> filter)
+    {
         return await _dbCollection.Find(filter).FirstOrDefaultAsync();
     }
 
@@ -49,7 +60,5 @@ public class MongoRepository<T> : IRepository<T> where T : IEntity
     {
         FilterDefinition<T> filter = filterBuilder.Eq(entity => entity.Id, Id);
         await _dbCollection.DeleteOneAsync(filter);
-    }
-
-
+    }    
 }

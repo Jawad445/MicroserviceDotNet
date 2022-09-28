@@ -1,4 +1,4 @@
-﻿namespace Play.Catalog.Entities
+﻿namespace Play.Common.Interfaces
 {
     public interface IEntity
     {

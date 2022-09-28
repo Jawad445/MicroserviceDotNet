@@ -2,8 +2,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Play.Catalog.Entities;
-using Play.Catalog.Extentions;
-using Play.Catalog.Repositories;
+using Play.Common.MongoDb;
 
 var builder = WebApplication.CreateBuilder(args);
 

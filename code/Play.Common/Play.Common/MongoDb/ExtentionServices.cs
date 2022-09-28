@@ -1,12 +1,14 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using Play.Catalog.Entities;
-using Play.Catalog.Repositories;
+using Play.Common.Interfaces;
+using Play.Common.Settings;
 
-namespace Play.Catalog.Extentions;
+namespace Play.Common.MongoDb;
 
-public static class Services
+public static class ExtentionServices
 {    
     public static IServiceCollection AddMongo(this IServiceCollection services)
     {
@@ -19,7 +21,7 @@ public static class Services
             var serviceSettings = configuration.GetSection("ServiceSettings").Get<ServiceSettings>();
             var mongoDbSettings = configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
             var mongoClient = new MongoClient(mongoDbSettings.ConnectionString);
-            return mongoClient.GetDatabase(serviceSettings.Name);
+            return mongoClient.GetDatabase(serviceSettings.ServiceName);
         });
 
         return services;
